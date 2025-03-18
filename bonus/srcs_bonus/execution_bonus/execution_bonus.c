@@ -125,9 +125,14 @@ int	execution(t_cmd *cmd, t_other *other)
 			close(tmp->pipefd[WRITE]);
 			other->prev_read = tmp->pipefd[READ];
 		}
-		wait(NULL);
 		ind.i++;
 		tmp = tmp->next;
+	}
+	ind.t = 0;
+	while (ind.t < ind.i)
+	{
+		wait(NULL);
+		ind.t ++;
 	}
 	return (SUCCESSFUL);
 }

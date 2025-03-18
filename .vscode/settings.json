@@ -2,5 +2,8 @@
 	"files.associations": {
 		"header.h": "c",
 		"header_bonus.h": "c"
-	}
+	},
+	"editor.cursorSmoothCaretAnimation": "on",
+	"editor.cursorStyle": "line",
+	"editor.cursorSurroundingLines": 0
 }

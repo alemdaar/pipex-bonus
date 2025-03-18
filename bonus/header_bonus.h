@@ -55,7 +55,6 @@ typedef struct s_other {
 	int		open2;
 	int		prev_read;
 	int		limiter;
-	int		debug;
 }	t_other;
 
 typedef struct s_ind
