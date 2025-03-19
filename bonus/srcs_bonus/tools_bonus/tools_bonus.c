@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oelhasso <elhassounioussama2@gmail.com>    +#+  +:+       +#+        */
+/*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:03:29 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/03/18 02:46:17 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/03/19 02:02:51 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,26 +57,35 @@ int	check_file(t_cmd *tmp, t_cmd *cmd, t_other *other, int flag)
 	
 	if (flag == 0)
 	{
-		other->open1 = open(other->infile, O_RDWR);
-		if (other->open1 == -1)
+		if (other->is_limiter == TRUE)
+			make_heredoc(tmp, cmd, other);
+		else
 		{
-			close_fds(tmp->pipefd, -1);
-			return (free_all(cmd, other), perror("open: "), exit(1), 1);
+			other->open1 = open(other->infile, O_RDWR);
+			if (other->open1 == -1)
+			{
+				close_fds(tmp->pipefd, -1);
+				return (free_all(cmd, other), perror("open: "), exit(1), 1);
+			}
 		}
 		return (SUCCESSFUL);
 	}
 	else if (flag == other->count_proc - 1)
 	{
-		other->open2 = open(other->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		if (other->is_limiter == TRUE)
+			other->open2 = open(other->outfile, O_WRONLY | O_APPEND | O_CREAT, 0644);
+		else
+			other->open2 = open(other->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (other->open2 == -1)
 		{
 			close(other->prev_read);
+			unlink("/tmp/here_doc");
 			return (free_all(cmd, other), perror("open: "), exit(1), 1);
 		}
+		return (SUCCESSFUL);
 	}
 	else
 		return (SUCCESSFUL);
-	return (SUCCESSFUL);
 }
 
 void	protect_it(t_cmd *cmd)

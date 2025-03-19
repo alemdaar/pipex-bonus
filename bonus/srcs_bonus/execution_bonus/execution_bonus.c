@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oelhasso <elhassounioussama2@gmail.com>    +#+  +:+       +#+        */
+/*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 18:03:38 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/03/18 02:32:02 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/03/19 01:55:46 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,14 @@ static int	exec(t_cmd *tmp, t_cmd *cmd, t_other *other)
 {
 	if (tmp->path_cmd == NULL)
 	{
+		unlink("/tmp/here_doc");
 		free_all(cmd, other);
 		myputstr ("Error: command not found\n", 2);
 		exit(1);
 	}
 	if (execve(tmp->path_cmd, tmp->argument, NULL) == ERROR)
 	{
+		unlink("/tmp/here_doc");
 		free_all(cmd, other);
 		perror ("execve: ");
 		exit(1);
@@ -86,12 +88,12 @@ static int	child_process(t_cmd *tmp, t_cmd *cmd, t_other *other, int position)
 	t_ind	ind;
 
 	ind.r = 0;
-	ind.r = check_file(tmp, cmd, other, position);
-	if (ind.r == -1)
-		return (free_all(cmd, other), exit(1), 1);
+	check_file(tmp, cmd, other, position);
 	ind.r = dupping(tmp, other, position);
 	if (ind.r == -1)
 	{
+		if (position == 0)
+			unlink("/tmp/here_doc");
 		free_all(cmd, other);
 		return (perror("Error dup2: "), exit(1), 1);
 	}
@@ -118,6 +120,8 @@ int	execution(t_cmd *cmd, t_other *other)
 		}
 		if (tmp->pid == 0)
 			child_process(tmp, cmd, other, ind.i);
+		if (ind.i == 0)
+			unlink("/tmp/here_doc");
 		if (ind.i != 0)
 			close(other->prev_read);
 		if (tmp->next)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parcing1_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oelhasso <elhassounioussama2@gmail.com>    +#+  +:+       +#+        */
+/*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 22:13:15 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/03/18 02:30:21 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/03/19 00:46:40 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int	parcing(t_cmd **cmd, char **av, t_other *other)
 	t_cmd	*tmp;
 
 	ind.i = 2;
+	if (other->is_limiter == TRUE)
+		ind.i = 3;
 	tmp = *cmd;
 	while (ind.i < other->ac - 1)
 	{

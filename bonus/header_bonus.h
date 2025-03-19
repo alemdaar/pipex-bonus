@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   header_bonus.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oelhasso <elhassounioussama2@gmail.com>    +#+  +:+       +#+        */
+/*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 17:56:48 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/03/18 02:37:04 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/03/19 01:26:04 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+# include "get_next_line/get_next_line.h"
 // struct
 typedef struct s_cmd {
 	char			*cmd;
@@ -54,7 +55,8 @@ typedef struct s_other {
 	int		open1;
 	int		open2;
 	int		prev_read;
-	int		limiter;
+	int		is_limiter;
+	char	*limiter;
 }	t_other;
 
 typedef struct s_ind
@@ -105,4 +107,7 @@ int		awk_arg3(t_cmd *tmp, t_ind *ind);
 int		count_awk_opt(char *opt);
 int		execution(t_cmd *cmd, t_other *other);
 int		close_fds(int fds[2], int file);
+int		make_heredoc(t_cmd *tmp, t_cmd *cmd, t_other *other);
+int		open_here_doc(t_cmd *tmp, t_cmd *cmd, t_other *other);
+int		is_limiter(char *line, char *limiter);
 #endif
