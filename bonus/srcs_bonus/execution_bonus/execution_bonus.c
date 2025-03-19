@@ -6,7 +6,7 @@
 /*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 18:03:38 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/03/19 01:55:46 by macbookair       ###   ########.fr       */
+/*   Updated: 2025/03/19 18:27:13 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int	execution(t_cmd *cmd, t_other *other)
 		}
 		if (tmp->pid == 0)
 			child_process(tmp, cmd, other, ind.i);
-		if (ind.i == 0)
+		if (ind.i == 0 && other->is_limiter == TRUE)
 			unlink("/tmp/here_doc");
 		if (ind.i != 0)
 			close(other->prev_read);
@@ -138,5 +138,7 @@ int	execution(t_cmd *cmd, t_other *other)
 		wait(NULL);
 		ind.t ++;
 	}
+	if (other->is_limiter == TRUE)
+		unlink("/tmp/here_doc");
 	return (SUCCESSFUL);
 }
