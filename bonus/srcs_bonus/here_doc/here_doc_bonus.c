@@ -6,7 +6,7 @@
 /*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 00:00:40 by macbookair        #+#    #+#             */
-/*   Updated: 2025/03/20 01:30:06 by macbookair       ###   ########.fr       */
+/*   Updated: 2025/03/20 02:00:06 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,16 @@ int	make_heredoc(t_other *other)
 
 	open_here_doc(other);
 	ind.c = 0;
+	while (1)
 	{
 		myputstr("pipe heredoc> ", 1);
 		line = get_next_line(0);
+		if (line == NULL && ind.c == 0)
+		{
+			close(other->open1);
+			unlink(other->infile);
+			return (myputstr("gnl failed\n", 2), 1);
+		}
 		if (line == NULL && ind.c == 1)
 			break ;
 		ind.c = 1;
@@ -52,12 +59,6 @@ int	make_heredoc(t_other *other)
 			return (free(line), SUCCESSFUL);
 		write (other->open1, line, mystrlen(line));
 	}
-		if (line == NULL && ind.c == 0)
-		{
-			close(other->open1);
-			unlink(other->infile);
-			return (myputstr("gnl failed\n", 2), 1);
-		}
 	if (line)
 		free(line);
 	return (close(other->open1), other->open1 = -1, SUCCESSFUL);
