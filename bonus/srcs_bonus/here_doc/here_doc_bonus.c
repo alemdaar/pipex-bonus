@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
+/*   By: oelhasso <elhassounioussama2@gmail.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 00:00:40 by macbookair        #+#    #+#             */
-/*   Updated: 2025/03/20 02:00:06 by macbookair       ###   ########.fr       */
+/*   Updated: 2025/03/20 02:24:05 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ int	is_limiter(char *line, char *limiter)
 	ind.i = 0;
 	while (limiter[ind.i] && limiter[ind.i] == line[ind.i])
         ind.i ++;
-    if (limiter[ind.i])
-        return (FALSE);
-    return (TRUE);
+    if (limiter[ind.i] == 0 && line[ind.i] == '\n')
+        return (TRUE);
+    return (FALSE);
 }
 
 int	make_heredoc(t_other *other)
