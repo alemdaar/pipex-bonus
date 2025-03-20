@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
+/*   By: oelhasso <elhassounioussama2@gmail.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 18:03:38 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/03/20 01:24:14 by macbookair       ###   ########.fr       */
+/*   Updated: 2025/03/20 19:21:30 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ int	execution(t_cmd *cmd, t_other *other)
 		wait(NULL);
 		ind.t ++;
 	}
-	if (access(other->infile, F_OK) == 0)
+	if (access(other->infile, F_OK) == 0 && other->is_limiter == TRUE)
 		unlink(other->infile);
 	return (SUCCESSFUL);
 }
