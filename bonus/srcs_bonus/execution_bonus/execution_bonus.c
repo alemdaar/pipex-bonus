@@ -6,7 +6,7 @@
 /*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 18:03:38 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/03/19 18:27:13 by macbookair       ###   ########.fr       */
+/*   Updated: 2025/03/20 01:24:14 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,17 @@ static int	exec(t_cmd *tmp, t_cmd *cmd, t_other *other)
 {
 	if (tmp->path_cmd == NULL)
 	{
-		unlink("/tmp/here_doc");
+		
+		if (access(other->infile, F_OK) == 0)
+			unlink(other->infile);
 		free_all(cmd, other);
 		myputstr ("Error: command not found\n", 2);
 		exit(1);
 	}
 	if (execve(tmp->path_cmd, tmp->argument, NULL) == ERROR)
 	{
-		unlink("/tmp/here_doc");
+		if (access(other->infile, F_OK) == 0)
+			unlink(other->infile);
 		free_all(cmd, other);
 		perror ("execve: ");
 		exit(1);
@@ -93,7 +96,10 @@ static int	child_process(t_cmd *tmp, t_cmd *cmd, t_other *other, int position)
 	if (ind.r == -1)
 	{
 		if (position == 0)
-			unlink("/tmp/here_doc");
+		{
+			if (access(other->infile, F_OK) == 0)
+				unlink(other->infile);
+		}
 		free_all(cmd, other);
 		return (perror("Error dup2: "), exit(1), 1);
 	}
@@ -120,8 +126,6 @@ int	execution(t_cmd *cmd, t_other *other)
 		}
 		if (tmp->pid == 0)
 			child_process(tmp, cmd, other, ind.i);
-		if (ind.i == 0 && other->is_limiter == TRUE)
-			unlink("/tmp/here_doc");
 		if (ind.i != 0)
 			close(other->prev_read);
 		if (tmp->next)
@@ -138,7 +142,7 @@ int	execution(t_cmd *cmd, t_other *other)
 		wait(NULL);
 		ind.t ++;
 	}
-	if (other->is_limiter == TRUE)
-		unlink("/tmp/here_doc");
+	if (access(other->infile, F_OK) == 0)
+		unlink(other->infile);
 	return (SUCCESSFUL);
 }

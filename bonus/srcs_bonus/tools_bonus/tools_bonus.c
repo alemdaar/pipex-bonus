@@ -6,7 +6,7 @@
 /*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 20:03:29 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/03/19 19:17:14 by macbookair       ###   ########.fr       */
+/*   Updated: 2025/03/20 01:27:05 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,17 @@ int	close_fds(int fds[2], int file)
 
 int	check_file(t_cmd *tmp, t_cmd *cmd, t_other *other, int flag)
 {
-	
-	if (flag == 0 && other->is_limiter == FALSE)
+	if (flag == 0)
 	{
-		other->open1 = open(other->infile, O_RDWR);
+		if (other->is_limiter == FALSE)
+			other->open1 = open(other->infile, O_RDWR);
+		else {	
+			if (access(other->infile, F_OK) == 0)
+				open ("yes", O_CREAT | O_RDWR, 0777);
+			else
+				open ("NO", O_CREAT | O_RDWR, 0777);
+			other->open1 = open(other->infile, O_RDWR | O_APPEND);
+		}
 		if (other->open1 == -1)
 		{
 			close_fds(tmp->pipefd, -1);
@@ -74,7 +81,6 @@ int	check_file(t_cmd *tmp, t_cmd *cmd, t_other *other, int flag)
 		if (other->open2 == -1)
 		{
 			close(other->prev_read);
-			unlink("/tmp/here_doc");
 			return (free_all(cmd, other), perror("open: "), exit(1), 1);
 		}
 		return (SUCCESSFUL);

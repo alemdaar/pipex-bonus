@@ -6,7 +6,7 @@
 /*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 17:56:48 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/03/19 01:26:04 by macbookair       ###   ########.fr       */
+/*   Updated: 2025/03/19 20:54:28 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ int		awk_arg3(t_cmd *tmp, t_ind *ind);
 int		count_awk_opt(char *opt);
 int		execution(t_cmd *cmd, t_other *other);
 int		close_fds(int fds[2], int file);
-int		make_heredoc(t_cmd *tmp, t_cmd *cmd, t_other *other);
-int		open_here_doc(t_cmd *tmp, t_cmd *cmd, t_other *other);
+int		make_heredoc(t_other *other);
 int		is_limiter(char *line, char *limiter);
 #endif

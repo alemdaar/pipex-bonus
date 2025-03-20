@@ -6,7 +6,7 @@
 /*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 16:57:09 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/03/19 19:25:18 by macbookair       ###   ########.fr       */
+/*   Updated: 2025/03/20 00:24:11 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ static void	is_here_doc(char *str, t_other *other)
 			if (str[6] == 'o' && str[7] == 'c' && str[8] == 0)
 			{
 				other->is_limiter = 1;
-				unlink("/tmp/here_doc");
+				if (access(other->infile, F_OK) == 0)
+					unlink(other->infile);
 				return ;
 			}
 		}
@@ -40,7 +41,10 @@ static void set_up(int ac, char **av, t_other *other)
 		other->count_proc --;
 	if (other->is_limiter == TRUE)
 		other->limiter = av[2];
-	other->infile = av[1];
+	if (other->is_limiter == FALSE)
+		other->infile = av[1];
+	else
+		other->infile = "/tmp/here_doc";
 	other->outfile = av[ac - 1];
 }
 
@@ -58,34 +62,35 @@ int	main(int ac, char **av, char **envp)
 	// 	return (1);
 	// }
 	is_here_doc(av[1], &other);
-	if (other.is_limiter == TRUE)
-			make_heredoc(tmp, cmd, other);
-	cmd = NULL;
 	set_up(ac, av, &other);
+	if (other.is_limiter == TRUE)
+		make_heredoc(&other);
+	cmd = NULL;
 	edit_paths(&other, envp);
 	parcing(&cmd, av, &other);
-	// t_cmd *tmp;
-	// tmp = cmd;
-	// int i;
-	// while (tmp)
-	// {
-	// 	printf("cmd = %s\n", tmp->cmd);
-	// 	printf("opt = %s\n", tmp->opt);
-	// 	printf("ar = %d\n", tmp->ar);
-	// 	i = 0;
-	// 	while (tmp->argument[i])
-	// 		printf("argument = %s\n", tmp->argument[i++]);
-	// 	printf("path_cmd = %s\n", tmp->path_cmd);
-	// 	tmp = tmp->next;
-	// }
-	// printf("all path = %s\n", other.all_path);
-	// printf("count path = %d\n", other.count_path);
-	// printf("count proc = %d\n", other.count_proc);
-	// printf("infile = %s\n", other.infile);
-	// printf("outfile = %s\n", other.outfile);
-	// i = 0;
-	// while (i < other.count_path)
-	// 	printf("paths = %s\n", other.paths[i++]);
+	t_cmd *tmp;
+	tmp = cmd;
+	int i;
+	while (tmp)
+	{
+		printf("cmd = %s\n", tmp->cmd);
+		printf("opt = %s\n", tmp->opt);
+		printf("ar = %d\n", tmp->ar);
+		i = 0;
+		while (tmp->argument[i])
+			printf("argument = %s\n", tmp->argument[i++]);
+		printf("path_cmd = %s\n", tmp->path_cmd);
+		tmp = tmp->next;
+	}
+	printf("all path = %s\n", other.all_path);
+	printf("count path = %d\n", other.count_path);
+	printf("count proc = %d\n", other.count_proc);
+	printf("infile = %s\n", other.infile);
+	printf("outfile = %s\n", other.outfile);
+	i = 0;
+	while (i < other.count_path)
+		printf("paths = %s\n", other.paths[i++]);
+	printf("limiter = %s\n", other.limiter);
 	execution(cmd, &other);
 	free_all(cmd, &other);
 }

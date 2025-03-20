@@ -6,19 +6,17 @@
 /*   By: macbookair <macbookair@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 00:00:40 by macbookair        #+#    #+#             */
-/*   Updated: 2025/03/19 02:52:09 by macbookair       ###   ########.fr       */
+/*   Updated: 2025/03/20 01:30:06 by macbookair       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../header_bonus.h"
 
-int	open_here_doc(t_cmd *tmp, t_cmd *cmd, t_other *other)
+static int	open_here_doc(t_other *other)
 {
-	other->open1 = open("/tmp/here_doc", O_CREAT | O_RDWR | O_APPEND, 0644);
+	other->open1 = open(other->infile, O_CREAT | O_RDWR | O_APPEND, 0644);
 	if (other->open1 == -1)
 	{
-		close_fds(tmp->pipefd, -1);
-		free_all(cmd, other);
 		perror("open: ");
 		exit(FAILED);
 	}
@@ -37,31 +35,30 @@ int	is_limiter(char *line, char *limiter)
     return (TRUE);
 }
 
-int	make_heredoc(t_cmd *tmp, t_cmd *cmd, t_other *other)
+int	make_heredoc(t_other *other)
 {
 	char	*line;
 	t_ind	ind;
 
-	open_here_doc(tmp, cmd, other);
+	open_here_doc(other);
 	ind.c = 0;
-	while (1)
 	{
 		myputstr("pipe heredoc> ", 1);
 		line = get_next_line(0);
-		if (line == NULL && ind.c == 0)
-		{
-			close_fds(tmp->pipefd, other->open1);
-			unlink("/tmp/here_doc");
-			free_all(NULL, other);
-			return (myputstr("gnl failed\n", 2), 1);
-		}
 		if (line == NULL && ind.c == 1)
 			break ;
 		ind.c = 1;
 		if (is_limiter(line, other->limiter) == TRUE)
 			return (free(line), SUCCESSFUL);
 		write (other->open1, line, mystrlen(line));
-		free(line);
 	}
-	return (SUCCESSFUL);
+		if (line == NULL && ind.c == 0)
+		{
+			close(other->open1);
+			unlink(other->infile);
+			return (myputstr("gnl failed\n", 2), 1);
+		}
+	if (line)
+		free(line);
+	return (close(other->open1), other->open1 = -1, SUCCESSFUL);
 }
